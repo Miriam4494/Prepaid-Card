@@ -1,0 +1,2 @@
+PurchaseCenterId,NamePurchasePoint,Address,City,Phone,Email,Quantity
+2,string,string,string,string,@,0

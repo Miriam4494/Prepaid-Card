@@ -1,0 +1,4 @@
+StoreId,StoreName,Address,City,Phone,Email,Manager,SiteStore
+20,string,string,string,string,string,string,string
+40,string,string,string,string,string,string,string
+50,string,string,string,string,@,string,string
