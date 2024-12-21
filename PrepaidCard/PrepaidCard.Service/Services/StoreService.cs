@@ -8,30 +8,30 @@ using System.Threading.Tasks;
 
 namespace PrepaidCard.Service.Services
 {
-    public class StoreService: IService<StoreEntity>
+    public class StoreService: StoreIService
     {
         readonly IRepository<StoreEntity> _iRepository;
         public StoreService(IRepository<StoreEntity> iRepository)
         {
             _iRepository = iRepository;
         }
-        public List<StoreEntity> Get()
+        public List<StoreEntity> GetStores()
         {
             return _iRepository.Get();
         }
-        public StoreEntity GetById(int id)
+        public StoreEntity GetStoreById(int id)
         {
             return _iRepository.GetById(id);
         }
-        public bool Add(StoreEntity order)
+        public StoreEntity AddStore(StoreEntity order)
         {
             return _iRepository.Add(order);
         }
-        public bool Update(int id, StoreEntity order)
+        public StoreEntity UpdateStore(int id, StoreEntity order)
         {
             return _iRepository.Update(id, order);
         }
-        public bool Delete(int id)
+        public bool DeleteStore(int id)
         {
             return _iRepository.Delete(id);
         }

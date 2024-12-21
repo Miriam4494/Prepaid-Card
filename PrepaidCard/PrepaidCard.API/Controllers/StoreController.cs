@@ -9,8 +9,8 @@ namespace PrepaidCard.API.Controllers
     [ApiController]
     public class StoreController : ControllerBase
     {
-        readonly IService<StoreEntity> _iService;
-        public StoreController(IService<StoreEntity> iService)
+        readonly StoreIService _iService;
+        public StoreController(StoreIService iService)
         {
             _iService = iService;
         }
@@ -18,14 +18,14 @@ namespace PrepaidCard.API.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<StoreEntity>> Get()
         {
-            return _iService.Get();
+            return _iService.GetStores();
         }
 
         // GET api/<CleanerController>/5
         [HttpGet("{id}")]
         public ActionResult<StoreEntity> Get(int id)
         {
-            StoreEntity s = _iService.GetById(id);
+            StoreEntity s = _iService.GetStoreById(id);
             if (s == null)
                 return NotFound();
             return s;
@@ -33,23 +33,23 @@ namespace PrepaidCard.API.Controllers
 
         // POST api/<CleanerController>
         [HttpPost]
-        public ActionResult<bool> Post([FromBody] StoreEntity store)
+        public ActionResult<StoreEntity> Post([FromBody] StoreEntity store)
         {
-            return _iService.Add(store);
+            return _iService.AddStore(store);
         }
 
         // PUT api/<CleanerController>/5
         [HttpPut("{id}")]
-        public ActionResult<bool> Put(int id, [FromBody] StoreEntity store)
+        public ActionResult<StoreEntity> Put(int id, [FromBody] StoreEntity store)
         {
-            return _iService.Update(id, store);
+            return _iService.UpdateStore(id, store);
         }
 
         // DELETE api/<CleanerController>/5
         [HttpDelete("{id}")]
         public ActionResult<bool> Delete(int id)
         {
-            return _iService.Delete(id);
+            return _iService.DeleteStore(id);
         }
     }
 }

@@ -9,18 +9,18 @@ using System.Threading.Tasks;
 
 namespace PrepaidCard.Service.Services
 {
-    public class CardService: IService<CardEntity>
+    public class CardService: CardIService
     {
         readonly IRepository<CardEntity> _iRepository;
         public CardService(IRepository<CardEntity> iRepository)
         {
             _iRepository = iRepository;
         }
-        public List<CardEntity> Get()
+        public List<CardEntity> GetCards()
         {
                 return _iRepository.Get();
         }
-            public CardEntity GetById(int id)
+            public CardEntity GetCardById(int id)
             {
                 return _iRepository.GetById(id);
             }
@@ -46,15 +46,15 @@ namespace PrepaidCard.Service.Services
             //        return true;
             //    return false;
             //}
-            public bool Add(CardEntity cleaner)
+            public CardEntity AddCard(CardEntity cleaner)
             {
                  return _iRepository.Add(cleaner);
             }
-            public bool Update(int id, CardEntity cleaner)
+            public CardEntity UpdateCard(int id, CardEntity cleaner)
             {
                  return _iRepository.Update(id, cleaner);
             }
-            public bool Delete(int id)
+            public bool DeleteCard(int id)
             {
                 return _iRepository.Delete(id);
             }

@@ -1,4 +1,6 @@
-﻿using PrepaidCard.Core.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using PrepaidCard.Core.Entities;
 using PrepaidCard.Core.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -16,20 +18,18 @@ namespace PrepaidCard.Data.Repositories
             _dataContext = dataContext;
         }
 
-        //שליפת רשימת לקוחות
         public List<CustomerEntity> Get()
         {
 
-            return _dataContext.customers;
+            return _dataContext.customers.ToList();
         }
-        //שליפת לקוח לפי מזהה
         public CustomerEntity GetById(int id)
         {
-            if (_dataContext.customers == null || (_dataContext.customers.FindIndex(c => c.CustomerId == id) == -1))
+            if (_dataContext.customers == null || (_dataContext.customers.ToList().FindIndex(c => c.CustomerId == id) == -1))
                 return null;
-            return _dataContext.customers.Find(c => c.CustomerId == id);
+            return _dataContext.customers.Find( id);
         }
-        #region פונקציות מיוחדות
+        #region especial function
 
         //פונקציה זו עדין אינה טובה צריך לטפל בה
 
@@ -42,39 +42,66 @@ namespace PrepaidCard.Data.Repositories
         //}
         #endregion
 
-        //הוספת לקוח
-        public bool Add(CustomerEntity customer)
+        public CustomerEntity Add(CustomerEntity customer)
         {
-            if (_dataContext.customers == null)
-                _dataContext.customers = new List<CustomerEntity>();
-            if (_dataContext.customers.Find(c => c.CustomerId == customer.CustomerId) != null) return false;
+            if (_dataContext.customers.Find( customer.CustomerId) != null) return null;
 
             _dataContext.customers.Add(customer);
-            return _dataContext.Save(_dataContext.customers, "Data/Customers.csv");
-        }
-        //עדכון לקוח
-        public bool Update(int id, CustomerEntity customer)
-        {
-            if (_dataContext.customers == null || (_dataContext.customers.Find(c => c.CustomerId == id) == null))
-                return false;
-            int index = _dataContext.customers.FindIndex(c => c.CustomerId == id);
-            _dataContext.customers[index].Adress = customer.Adress;
-            _dataContext.customers[index].FirstName = customer.FirstName;
-            _dataContext.customers[index].DateOfBirth = customer.DateOfBirth;
-            _dataContext.customers[index].DateOfJoin = customer.DateOfJoin;
-            _dataContext.customers[index].Email = customer.Email;
-            _dataContext.customers[index].Phone = customer.Phone;
-            _dataContext.customers[index].LastName = customer.LastName;
-            return _dataContext.Save(_dataContext.customers, "Data/Customers.csv");
+            try
+            {
+                _dataContext.SaveChanges();
+                return customer;
 
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
-        //מחיקת לקוח
+
+
+
+
+        public CustomerEntity Update(int id, CustomerEntity customer)
+        {
+            if (_dataContext.customers == null || customer == null)
+                return null;
+            CustomerEntity c = _dataContext.customers.Find(id);
+            if (c == null)
+                return null;
+            c.Adress = customer.Adress!=null?customer.Adress:c.Adress;
+            c.FirstName = customer.FirstName!=null?customer.FirstName:c.FirstName;
+            c.DateOfBirth = customer.DateOfBirth!=null?customer.DateOfBirth:c.DateOfBirth;
+            c.DateOfJoin = customer.DateOfJoin!=null?customer.DateOfJoin:c.DateOfJoin;
+            c.Email = customer.Email!=null ? customer.Email : c.Email;
+            c.Phone = customer.Phone!=null?customer.Phone:c.Phone;
+            c.LastName = customer.LastName != null ? customer.LastName : c.LastName;
+            try
+            {
+                _dataContext.SaveChanges();
+                return customer;
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
         public bool Delete(int id)
         {
-            if (_dataContext.customers == null || !(_dataContext.customers.Exists(c => c.CustomerId == id)))
+            if (_dataContext.customers == null || (_dataContext.customers.Find(id) == null))
                 return false;
-            _dataContext.customers.Remove(_dataContext.customers.Find(c => c.CustomerId == id));
-            return _dataContext.Save(_dataContext.customers, "Data/Customers.csv"); ;
+            _dataContext.customers.Remove(_dataContext.customers.Find(id));
+            try
+            {
+                _dataContext.SaveChanges();
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
     }
 }

@@ -15,20 +15,19 @@ namespace PrepaidCard.Data.Repositories
         {
             _dataContext = dataContext;
         }
-        //שליפת רשימת חנויות
         public List<StoreEntity> Get()
         {
 
-            return _dataContext.stores;
+            return _dataContext.stores.ToList();
         }
-        //שליפת חנות לפי מזהה חנות
+       
         public StoreEntity GetById(int id)
         {
-            if (_dataContext.stores == null || (_dataContext.stores.Find(s => s.StoreId == id) == null))
+            if (_dataContext.stores == null || (_dataContext.stores.Find(id) == null))
                 return null;
-            return _dataContext.stores.Find(store => store.StoreId == id);
+            return _dataContext.stores.Find(id);
         }
-        #region פונקציות מיוחדות
+        #region especial function
         //שליפת חנות לפי שם חנות
         //public StoreEntity GetStoreByName(string name)
         //{
@@ -38,43 +37,62 @@ namespace PrepaidCard.Data.Repositories
         //}
         #endregion
 
-        //הוספת חנות
-        public bool Add(StoreEntity storee)
+        public StoreEntity Add(StoreEntity storee)
         {
-
-            if (_dataContext.stores == null)
-                _dataContext.stores = new List<StoreEntity>();
-            if (_dataContext.stores.Find(s => s.StoreId == storee.StoreId) != null) return false;
-
+            if (_dataContext.stores.Find(storee.StoreId) != null) return null;
             _dataContext.stores.Add(storee);
-            return _dataContext.Save(_dataContext.stores, "Data/Stores.csv");
+            try
+            {
+                _dataContext.SaveChanges();
+                return storee;
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
 
         }
-        //עדכון חנות
-        public bool Update(int id, StoreEntity storee)
+        public StoreEntity Update(int id, StoreEntity storee)
         {
-            if (_dataContext.stores == null || (_dataContext.stores.Find(s => s.StoreId == id) == null))
-                return false;
-            int index = _dataContext.stores.FindIndex(store => store.StoreId == id);
+            if (_dataContext.stores == null || storee== null)
+                return null;
+            StoreEntity s = _dataContext.stores.Find(id);
+            if (s == null)
+                return null;
+            s.SiteStore = storee.SiteStore!=null?storee.SiteStore:s.SiteStore;
+            s.City = storee.City!=null?storee.City:s.City;
+            s.Email = storee.Email!=null ? storee.Email : s.Email;
+            s.Address = storee.Address!=null?storee.Address:s.Address;
+            s.Manager = storee.Manager!=null ? storee.Manager : s.Manager;
+            s.StoreName = storee.StoreName!=null?storee.StoreName:s.StoreName;
+            s.Phone = storee.Phone != null ? storee.Phone : s.Phone;
+            try
+            {
+                _dataContext.SaveChanges();
+                return storee;
 
-            _dataContext.stores[index].SiteStore = storee.SiteStore;
-            _dataContext.stores[index].City = storee.City;
-            _dataContext.stores[index].Email = storee.Email;
-            _dataContext.stores[index].Address = storee.Address;
-            _dataContext.stores[index].Manager = storee.Manager;
-            _dataContext.stores[index].StoreName = storee.StoreName;
-            _dataContext.stores[index].Phone = storee.Phone;
-            return _dataContext.Save(_dataContext.stores, "Data/Stores.csv");
-
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
-        //מחיקת חנות
         public bool Delete(int id)
         {
-            if (_dataContext.stores == null || (_dataContext.stores.Find(s => s.StoreId == id) == null))
+            if (_dataContext.stores == null || (_dataContext.stores.Find(id) == null))
                 return false;
-            _dataContext.stores.Remove(_dataContext.stores.Find(store => store.StoreId == id));
-            return _dataContext.Save(_dataContext.stores, "Data/Stores.csv");
+            _dataContext.stores.Remove(_dataContext.stores.Find( id));
+            try
+            {
+                _dataContext.SaveChanges();
+                return true;
 
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
     }
 }

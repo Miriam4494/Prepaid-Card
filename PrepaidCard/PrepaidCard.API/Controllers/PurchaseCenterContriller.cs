@@ -9,8 +9,8 @@ namespace PrepaidCard.API.Controllers
     [ApiController]
     public class PurchaseCenterController : ControllerBase
     {
-        readonly IService<PurchaseCenterEntity> _iService;
-        public PurchaseCenterController(IService<PurchaseCenterEntity> iService)
+        readonly PurchaseCenterIService _iService;
+        public PurchaseCenterController(PurchaseCenterIService iService)
         {
             _iService = iService;
         }
@@ -18,14 +18,14 @@ namespace PrepaidCard.API.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<PurchaseCenterEntity>> Get()
         {
-            return _iService.Get();
+            return _iService.GetPurchaseCenters();
         }
 
         // GET api/<CleanerController>/5
         [HttpGet("{id}")]
         public ActionResult<PurchaseCenterEntity> Get(int id)
         {
-            PurchaseCenterEntity pc = _iService.GetById(id);
+            PurchaseCenterEntity pc = _iService.GetPurchaseCenterById(id);
             if (pc == null)
                 return NotFound();
             return pc;
@@ -33,23 +33,23 @@ namespace PrepaidCard.API.Controllers
 
         // POST api/<CleanerController>
         [HttpPost]
-        public ActionResult<bool> Post([FromBody] PurchaseCenterEntity purchaseCenter)
+        public ActionResult<PurchaseCenterEntity> Post([FromBody] PurchaseCenterEntity purchaseCenter)
         {
-            return _iService.Add(purchaseCenter);
+            return _iService.AddPurchaseCenter(purchaseCenter);
         }
 
         // PUT api/<CleanerController>/5
         [HttpPut("{id}")]
-        public ActionResult<bool> Put(int id, [FromBody] PurchaseCenterEntity purchaseCenter)
+        public ActionResult<PurchaseCenterEntity> Put(int id, [FromBody] PurchaseCenterEntity purchaseCenter)
         {
-            return _iService.Update(id, purchaseCenter);
+            return _iService.UpdatePurchaseCenter(id, purchaseCenter);
         }
 
         // DELETE api/<CleanerController>/5
         [HttpDelete("{id}")]
         public ActionResult<bool> Delete(int id)
         {
-            return _iService.Delete(id);
+            return _iService.DeletePurchaseCenter(id);
         }
     }
 }

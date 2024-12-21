@@ -9,8 +9,8 @@ namespace PrepaidCard.API.Controllers
     [ApiController]
     public class CustomerController : ControllerBase
     {
-        readonly IService<CustomerEntity> _iService;
-        public CustomerController(IService<CustomerEntity> iService)
+        readonly CustomerIService _iService;
+        public CustomerController(CustomerIService iService)
         {
             _iService = iService;
         }
@@ -18,14 +18,14 @@ namespace PrepaidCard.API.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<CustomerEntity>> Get()
         {
-            return _iService.Get();
+            return _iService.GetCustomers();
         }
 
         // GET api/<CleanerController>/5
         [HttpGet("{id}")]
         public ActionResult<CustomerEntity> Get(int id)
         {
-            CustomerEntity c = _iService.GetById(id);
+            CustomerEntity c = _iService.GetCustomerById(id);
             if (c == null)
                 return NotFound();
             return c;
@@ -33,23 +33,23 @@ namespace PrepaidCard.API.Controllers
 
         // POST api/<CleanerController>
         [HttpPost]
-        public ActionResult<bool> Post([FromBody] CustomerEntity customer)
+        public ActionResult<CustomerEntity> Post([FromBody] CustomerEntity customer)
         {
-            return _iService.Add(customer);
+            return _iService.AddCustomer(customer);
         }
 
         // PUT api/<CleanerController>/5
         [HttpPut("{id}")]
-        public ActionResult<bool> Put(int id, [FromBody] CustomerEntity customer)
+        public ActionResult<CustomerEntity> Put(int id, [FromBody] CustomerEntity customer)
         {
-            return _iService.Update(id, customer);
+            return _iService.UpdateCustomer(id, customer);
         }
 
         // DELETE api/<CleanerController>/5
         [HttpDelete("{id}")]
         public ActionResult<bool> Delete(int id)
         {
-            return _iService.Delete(id);
+            return _iService.DeleteCustomer(id);
         }
     }
 }

@@ -9,9 +9,9 @@ namespace PrepaidCard.Core.Interfaces
     public interface IRepository<T>
     {
         public List<T> Get();
-        public T GetById(int id);
-        public bool Add(T t);
-        public bool Update(int id, T t);
+        public T? GetById(int id);
+        public T Add(T t);
+        public T Update(int id, T t);
         public bool Delete(int id);
     }
 }

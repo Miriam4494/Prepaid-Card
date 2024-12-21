@@ -18,16 +18,15 @@ namespace PrepaidCard.Data.Repositories
         public List<PurchaseEntity> Get()
         {
 
-            return _dataContext.purchases;
+            return _dataContext.purchases.ToList();
         }
-        //שליפת רכישה לפי מזהה רכישה
         public PurchaseEntity GetById(int id)
         {
-            if (_dataContext.purchases == null || (_dataContext.purchases.FindIndex(p => p.PurchaseId == id)) == -1)
+            if (_dataContext.purchases == null || (_dataContext.purchases.ToList().FindIndex(p => p.PurchaseId == id)) == -1)
                 return null;
-            return _dataContext.purchases.Find(purchase => purchase.PurchaseId == id);
+            return _dataContext.purchases.ToList().Find(purchase => purchase.PurchaseId == id);
         }
-        #region פונקציות מיוחדות
+        #region especial function
         //שליפת רכישה לפי מזהה כרטיס
         //public PurchaseEntity GetPurchaseByCard(int id)
         //{
@@ -36,47 +35,71 @@ namespace PrepaidCard.Data.Repositories
         //    return _dataContext.purchases.Find(purchase => purchase.CardId == id);
         //}
         //שליפת רכישה לפי מזהה מוקד
-        public PurchaseEntity GetPurchaseByPurchaseCenter(int id)
-        {
-            if (_dataContext.purchases == null || (_dataContext.purchases.FindIndex(b => b.PurchaseCenterId == id)) == -1)
-                return null;
-            return _dataContext.purchases.Find(purchase => purchase.PurchaseCenterId == id);
-        }
+        //public PurchaseEntity GetPurchaseByPurchaseCenter(int id)
+        //{
+        //    if (_dataContext.purchases == null || (_dataContext.purchases.FindIndex(b => b.PurchaseCenterId == id)) == -1)
+        //        return null;
+        //    return _dataContext.purchases.Find(purchase => purchase.PurchaseCenterId == id);
+        //}
         #endregion
 
-        //הוספת רכישה
-        public bool Add(PurchaseEntity purchase)
+        public PurchaseEntity Add(PurchaseEntity purchase)
         {
-            if (_dataContext.purchases == null)
-                _dataContext.purchases = new List<PurchaseEntity>();
-            if (_dataContext.purchases.Find(p => p.PurchaseId == purchase.PurchaseId) != null) return false;
+           
+            if (_dataContext.purchases.Find( purchase.PurchaseId) != null) return null;
 
             _dataContext.purchases.Add(purchase);
-            return _dataContext.Save(_dataContext.purchases, "Data/Purchases.csv");
+            try
+            {
+                _dataContext.SaveChanges();
+                return purchase;
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
 
         }
-        //עדכון רכישה
-        public bool Update(int id, PurchaseEntity purchase)
+        public PurchaseEntity Update(int id, PurchaseEntity purchase)
         {
-            if (_dataContext.purchases == null || (_dataContext.purchases.FindIndex(b => b.PurchaseId == id) == -1))
-                return false;
-            int index = _dataContext.purchases.FindIndex(purchase => purchase.PurchaseId == id);
-            _dataContext.purchases[index].CardId = purchase.CardId;
-            _dataContext.purchases[index].Sum = purchase.Sum;
-            _dataContext.purchases[index].CustomerId = purchase.CustomerId;
-            _dataContext.purchases[index].PurchaseCenterId = purchase.PurchaseCenterId;
-            _dataContext.purchases[index].DateOfPurchase = purchase.DateOfPurchase;
-            return _dataContext.Save(_dataContext.purchases, "Data/Purchases.csv");
+            if (_dataContext.purchases == null ||  purchase== null)
+                return null;
+            PurchaseEntity p = _dataContext.purchases.Find(id);
+            if (p == null)
+                return null;
+            p.CardId = purchase.CardId!=null?purchase.CardId:p.CardId;
+            p.Sum = purchase.Sum!=null?purchase.Sum:p.Sum;
+            p.CustomerId = purchase.CustomerId!=null?purchase.CustomerId:p.CustomerId;
+            p.PurchaseCenterId = purchase.PurchaseCenterId!=null?purchase.PurchaseCenterId:p.PurchaseCenterId;
+            p.DateOfPurchase = purchase.DateOfPurchase!=null?purchase.DateOfPurchase:p.DateOfPurchase;
+            try
+            {
+                _dataContext.SaveChanges();
+                return purchase;
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
 
         }
-        //מחיקת רכישה
         public bool Delete(int id)
         {
-            if (_dataContext.purchases == null || (_dataContext.purchases.FindIndex(b => b.PurchaseId == id)) == -1)
+            if (_dataContext.purchases == null || (_dataContext.purchases.ToList().FindIndex(b => b.PurchaseId == id)) == -1)
                 return false;
-            _dataContext.purchases.Remove(_dataContext.purchases.Find(p => p.PurchaseId == id));
-            return _dataContext.Save(_dataContext.purchases, "Data/Purchases.csv");
+            _dataContext.purchases.Remove(_dataContext.purchases.Find(id));
+            try
+            {
+                _dataContext.SaveChanges();
+                return true;
 
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
     }
 }

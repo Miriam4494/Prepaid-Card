@@ -15,20 +15,18 @@ namespace PrepaidCard.Data.Repositories
         {
             _dataContext = dataContext;
         }
-        //שליפת רשימת מוקדים
         public List<PurchaseCenterEntity> Get()
         {
 
-            return _dataContext.purchaseCenters;
+            return _dataContext.purchaseCenters.ToList();
         }
-        //שליפת מוקד לפי מזהה
         public PurchaseCenterEntity GetById(int id)
         {
-            if (_dataContext.purchaseCenters == null || (_dataContext.purchaseCenters.FindIndex(p => p.PurchaseCenterId == id) == -1))
+            if (_dataContext.purchaseCenters == null || (_dataContext.purchaseCenters.ToList().FindIndex(p => p.PurchaseCenterId == id) == -1))
                 return null;
-            return _dataContext.purchaseCenters.Find(p => p.PurchaseCenterId == id);
+            return _dataContext.purchaseCenters.Find( id);
         }
-        #region פונקציות מיוחדות
+        #region especial function
         //שליפת מוקד לפי עיר
         //public PurchaseCenterEntity GetByCity(string city)
         //{
@@ -38,40 +36,68 @@ namespace PrepaidCard.Data.Repositories
         //}
         #endregion
 
-        //הוספת מוקד
-        public bool Add(PurchaseCenterEntity purchaseCenter)
+        public PurchaseCenterEntity Add(PurchaseCenterEntity purchaseCenter)
         {
 
-            if (_dataContext.purchaseCenters == null)
-                _dataContext.purchaseCenters = new List<PurchaseCenterEntity>();
-            if (_dataContext.purchaseCenters.Find(p => p.PurchaseCenterId == purchaseCenter.PurchaseCenterId) != null) return false;
+            
+            if (_dataContext.purchaseCenters.Find( purchaseCenter.PurchaseCenterId) != null) return null;
 
             _dataContext.purchaseCenters.Add(purchaseCenter);
-            return _dataContext.Save(_dataContext.purchaseCenters, "Data/PurchaseCenters.csv");
+            try
+            {
+                _dataContext.SaveChanges();
+                return purchaseCenter;
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
 
         }
-        //עדכון מוקד
-        public bool Update(int id, PurchaseCenterEntity purchaseCenter)
+        public PurchaseCenterEntity Update(int id, PurchaseCenterEntity purchaseCenter)
         {
-            if (_dataContext.purchaseCenters == null || (_dataContext.purchaseCenters.FindIndex(p => p.PurchaseCenterId == id) == -1))
-                return false;
-            int index = _dataContext.purchaseCenters.FindIndex(p => p.PurchaseCenterId == id);
-            _dataContext.purchaseCenters[index].City = purchaseCenter.City;
-            _dataContext.purchaseCenters[index].Email = purchaseCenter.Email;
-            _dataContext.purchaseCenters[index].Quantity = purchaseCenter.Quantity;
-            _dataContext.purchaseCenters[index].Address = purchaseCenter.Address;
-            _dataContext.purchaseCenters[index].Phone = purchaseCenter.Phone;
-            _dataContext.purchaseCenters[index].NamePurchasePoint = purchaseCenter.NamePurchasePoint;
-            return _dataContext.Save(_dataContext.purchaseCenters, "Data/PurchaseCenters.csv");
+            if (_dataContext.purchaseCenters == null || purchaseCenter== null)
+                return null;
+
+            PurchaseCenterEntity pc = _dataContext.purchaseCenters.Find(id);
+            if (pc == null)
+                return null;
+          
+
+            pc.City = purchaseCenter.City!=null?purchaseCenter.City:pc.City;
+            pc.Email = purchaseCenter.Email!=null?purchaseCenter.Email:pc.Email;
+            pc.Quantity = purchaseCenter.Quantity!=null?purchaseCenter.Quantity:pc.Quantity;
+            pc.Address = purchaseCenter.Address != null ? purchaseCenter.Address : pc.Address;
+            pc.Phone = purchaseCenter.Phone!=null?purchaseCenter.Phone:pc.Phone;
+            pc.NamePurchasePoint = purchaseCenter.NamePurchasePoint != null ? purchaseCenter.NamePurchasePoint : pc.NamePurchasePoint;
+            try
+            {
+                _dataContext.SaveChanges();
+                return purchaseCenter;
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
 
         }
-        //מחיקת מוקד
         public bool Delete(int id)
         {
-            if (_dataContext.purchaseCenters == null || (_dataContext.purchaseCenters.FindIndex(p => p.PurchaseCenterId == id) == -1))
+            if (_dataContext.purchaseCenters == null || (_dataContext.purchaseCenters.Find( id)==null))
                 return false;
-            _dataContext.purchaseCenters.Remove(_dataContext.purchaseCenters.Find(p => p.PurchaseCenterId == id));
-            return _dataContext.Save(_dataContext.purchaseCenters, "Data/PurchaseCenters.csv");
+            _dataContext.purchaseCenters.Remove(_dataContext.purchaseCenters.Find( id));
+            try
+            {
+                _dataContext.SaveChanges();
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
 
         }
     }

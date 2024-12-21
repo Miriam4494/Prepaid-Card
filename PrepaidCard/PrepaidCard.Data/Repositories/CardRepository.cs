@@ -1,4 +1,5 @@
-﻿using PrepaidCard.Core.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using PrepaidCard.Core.Entities;
 using PrepaidCard.Core.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -17,33 +18,25 @@ namespace PrepaidCard.Data.Repositories
             _dataContext = dataContext;
         }
         public readonly DataContext _context;
-        //שליפת רשימת כרטיסים
-        //public List<CardEntity> GetCards()
-        //{
-        //    return DataManager.dataContexts.cards;
-        //}
+        //get cards
+
         public List<CardEntity> Get()
         {
-            return _dataContext.cards;
+            return _dataContext.cards.ToList();
         }
 
-        //שליפת כרטיס לפי מזהה
-        //public CardEntity GetCardByID(int id)
-        //{
-        //    if (DataManager.dataContexts.cards == null || (DataManager.dataContexts.cards.FindIndex(c => c.CardId == id) == -1))
-        //        return null;
-        //    return DataManager.dataContexts.cards.Find(card => card.CardId == id);
-        //}
+        //get card by id
+        
         public CardEntity GetById(int id)
         {
 
-            if (_dataContext.cards == null || (_dataContext.cards.FindIndex(c => c.CardId == id) == -1))
+            if (_dataContext.cards == null || (_dataContext.cards.ToList().FindIndex(c => c.CardId == id) == -1))
                 return null;
-            return _dataContext.cards.Find(c => c.CardId == id);
+            return _dataContext.cards.Find( id);
 
 
         }
-        #region פונקציות מיוחדות
+        #region especial function
         //שליפת כרטיס לפי מזהה לקוח
         //public CardEntity GetCardByCustomer(int id)
         //{
@@ -53,80 +46,69 @@ namespace PrepaidCard.Data.Repositories
         //}
         #endregion
 
-
-
-        //הוספת כרטיס
-        //public bool AddCard(CardEntity card)
-        //{ 
-        //    if (DataManager.dataContexts.cards == null)
-        //        DataManager.dataContexts.cards = new List<CardEntity>();
-        //    if(DataManager.dataContexts.cards.Find(c => c.CardId == card.CardId)!=null) return false;
-        //    DataManager.dataContexts.cards.Add(card);
-        //    return true;
-        //}
-
-
-
-
-        public bool Add(CardEntity card)
+        //add card
+        public CardEntity Add(CardEntity card)
         {
-            if (_dataContext.cards == null)
-                _dataContext.cards = new List<CardEntity>();
-            if (_dataContext.cards.Find(c => c.CardId == card.CardId) != null) return false;
+            if (_dataContext.cards.Find( card.CardId) != null) return null;
 
             _dataContext.cards.Add(card);
-            return _dataContext.Save(_dataContext.cards, "Data/Cards.csv");
+            try
+            {
+                _dataContext.SaveChanges();
+                return card;
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
-        //עדכון פרטי כרטיס
-        //public bool UpdateCard(int id, CardEntity card)
-        //{
-        //    if (DataManager.dataContexts.cards == null || (DataManager.dataContexts.cards.FindIndex(c => c.CardId == id) == -1))
-        //        return false;
-        //    int index = DataManager.dataContexts.cards.FindIndex(card => card.CardId == id);
-        //    DataManager.dataContexts.cards[index].ColorCard = card.ColorCard;
-        //    DataManager.dataContexts.cards[index].CardValidity = card.CardValidity;
-        //    DataManager.dataContexts.cards[index].PurchaseCenter = card.PurchaseCenter;
-        //    DataManager.dataContexts.cards[index].Sum = card.Sum;
-        //    DataManager.dataContexts.cards[index].PurchaseCenter = card.PurchaseCenter;
-        //    DataManager.dataContexts.cards[index].DateOfPurchase = card.DateOfPurchase;
-        //    return true;
-        //}
-
-        public bool Update(int id, CardEntity card)
+        //update card
+       
+        public CardEntity Update(int id, CardEntity card)
         {
-            if (_dataContext.cards == null || (_dataContext.cards.Find(c => c.CardId == id) == null))
-                return false;
-            int index = _dataContext.cards.FindIndex(c => c.CardId == id);
-            _dataContext.cards[index].ColorCard = card.ColorCard;
-            _dataContext.cards[index].CustomerId = card.CustomerId;
-            _dataContext.cards[index].CardValidity = card.CardValidity;
-            _dataContext.cards[index].PurchaseCenter = card.PurchaseCenter;
-            _dataContext.cards[index].Sum = card.Sum;
-            _dataContext.cards[index].PurchaseCenter = card.PurchaseCenter;
-            _dataContext.cards[index].DateOfPurchase = card.DateOfPurchase;
-            return _dataContext.Save(_dataContext.cards, "Data/Cards.csv");
+            if (_dataContext.cards == null ||card == null)
+                return null;
+            CardEntity c = _dataContext.cards.Find(id);
+            if (c == null)
+                return null;
+           
+            c.ColorCard = card.ColorCard!=null? card.ColorCard: c.ColorCard;
+            c.CustomerId = card.CustomerId!=null? card.CustomerId: c.CustomerId;
+            c.CardValidity = card.CardValidity!=null? card.CardValidity: c.CardValidity;
+            c.PurchaseCenter = card.PurchaseCenter!=null? card.PurchaseCenter : c.PurchaseCenter;
+            c.Sum = card.Sum!=null? card.Sum: c.Sum;
+            c.PurchaseCenter = card.PurchaseCenter!=null? card.PurchaseCenter : c.PurchaseCenter;
+            c.DateOfPurchase = card.DateOfPurchase!=null? card.DateOfPurchase: c.DateOfPurchase;
+            try
+            {
+                _dataContext.SaveChanges();
+                return card;
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
-
-
-
-        //מחיקת כרטיס
-        //public bool DeleteCard(int id)
-        //{
-        //    if (DataManager.dataContexts.cards == null || (DataManager.dataContexts.cards.FindIndex(c => c.CardId == id) == -1))
-        //        return false;
-        //    DataManager.dataContexts.cards.Remove(DataManager.dataContexts.cards.Find(card => card.CardId == id));
-        //    return true;
-        //}
-
+        //delete card
         public bool Delete(int id)
         {
 
-            if (_dataContext.cards == null || (_dataContext.cards.Find(c => c.CardId == id) == null))
+            if (_dataContext.cards == null || (_dataContext.cards.Find(id) == null))
                 return false;
-            _dataContext.cards.Remove(_dataContext.cards.Find(c => c.CardId == id));
-            return _dataContext.Save(_dataContext.cards, "Data/Cards.csv");
+            _dataContext.cards.Remove(_dataContext.cards.Find( id));
+            try
+            {
+                _dataContext.SaveChanges();
+                return true;
 
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
     }
 }

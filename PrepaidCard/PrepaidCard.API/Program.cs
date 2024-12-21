@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using PrepaidCard.Core.Entities;
 using PrepaidCard.Core.Interfaces;
 using PrepaidCard.Data;
@@ -19,20 +20,24 @@ namespace PrepaidCard.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddScoped<CardIService, CardService>();
+            builder.Services.AddScoped<CustomerIService, CustomerService>();
+            builder.Services.AddScoped<PurchaseCenterIService, PurchaseCenterService>();
+            builder.Services.AddScoped<PurchaseIService, PurchaseService>();
+            builder.Services.AddScoped<StoreIService, StoreService>();
+            //builder.Services.AddScoped<IRepository<CardEntity>, CardRepository>();
+            //builder.Services.AddScoped<IRepository<CustomerEntity>, CustomerRepository>();
+            //builder.Services.AddScoped<IRepository<PurchaseCenterEntity>, PurchaseCenterRepository>();
+            //builder.Services.AddScoped<IRepository<PurchaseEntity>, PurchaseRepository>();
+            //builder.Services.AddScoped<IRepository<StoreEntity>, StoreRepository>();
 
+            builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 
-            builder.Services.AddSingleton<DataContext>();
-            builder.Services.AddScoped<IService<CardEntity>, CardService>();
-            builder.Services.AddScoped<IService<CustomerEntity>, CustomerService>();
-            builder.Services.AddScoped<IService<PurchaseCenterEntity>, PurchaseCenterService>();
-            builder.Services.AddScoped<IService<PurchaseEntity>, PurchaseService>();
-            builder.Services.AddScoped<IService<StoreEntity>, StoreService>();
-            builder.Services.AddScoped<IRepository<CardEntity>, CardRepository>();
-            builder.Services.AddScoped<IRepository<CustomerEntity>, CustomerRepository>();
-            builder.Services.AddScoped<IRepository<PurchaseCenterEntity>, PurchaseCenterRepository>();
-            builder.Services.AddScoped<IRepository<PurchaseEntity>, PurchaseRepository>();
-            builder.Services.AddScoped<IRepository<StoreEntity>, StoreRepository>();
             builder.Services.AddControllers();
+            //builder.Services.AddSingleton<DataContext>();
+            builder.Services.AddDbContext<DataContext>();
+
 
             var app = builder.Build();
 
@@ -46,7 +51,6 @@ namespace PrepaidCard.API
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 

@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace PrepaidCard.Core.Entities
 {
+    [Table("Store")]
     public class StoreEntity
     {
+        [Key]
+        //[JsonIgnore]
         public int StoreId { get; set; }//מזהה חנות
         public string StoreName { get; set; }//שם
         public string Address { get; set; }//כתובת
