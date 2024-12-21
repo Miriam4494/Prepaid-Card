@@ -68,6 +68,7 @@ namespace PrepaidCard.Data.Repositories
        
         public CardEntity Update(int id, CardEntity card)
         {
+
             if (_dataContext.cards == null ||card == null)
                 return null;
             CardEntity c = _dataContext.cards.Find(id);
