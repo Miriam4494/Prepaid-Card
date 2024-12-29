@@ -1,5 +1,6 @@
 ﻿using PrepaidCard.Core.Entities;
-using PrepaidCard.Core.Interfaces;
+using PrepaidCard.Core.Interfaces.IRepositories;
+using PrepaidCard.Core.Interfaces.IServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,32 +9,45 @@ using System.Threading.Tasks;
 
 namespace PrepaidCard.Service.Services
 {
-    public class StoreService: StoreIService
+    public class StoreService: IStoreService
     {
-        readonly IRepository<StoreEntity> _iRepository;
-        public StoreService(IRepository<StoreEntity> iRepository)
+        readonly IRepositoryManager _repositoryManager;
+
+        public StoreService(IRepositoryManager iRepository)
         {
-            _iRepository = iRepository;
+            _repositoryManager = iRepository;
         }
         public List<StoreEntity> GetStores()
         {
-            return _iRepository.Get();
+            //return _repositoryManager._storeRepository.Get();
+            return _repositoryManager._storeRepository.GetFull();
         }
         public StoreEntity GetStoreById(int id)
         {
-            return _iRepository.GetById(id);
+            return _repositoryManager._storeRepository.GetById(id);
         }
         public StoreEntity AddStore(StoreEntity order)
         {
-            return _iRepository.Add(order);
+
+            StoreEntity s = _repositoryManager._storeRepository.Add(order);
+            if (s != null)
+                _repositoryManager.save();
+            return s;
+            
         }
         public StoreEntity UpdateStore(int id, StoreEntity order)
         {
-            return _iRepository.Update(id, order);
+            StoreEntity s = _repositoryManager._storeRepository.Update(id, order);
+            if (s != null)
+                _repositoryManager.save();
+            return s;
         }
         public bool DeleteStore(int id)
         {
-            return _iRepository.Delete(id);
+            bool succeed = _repositoryManager._storeRepository.Delete(id);
+            if (succeed)
+                _repositoryManager.save();
+            return succeed;
         }
     }
 }

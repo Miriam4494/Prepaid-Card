@@ -22,18 +22,18 @@ namespace PrepaidCard.Core.Entities
         public string Email { get; set; }//מייל
         public string Manager { get; set; }//מנהל
         public string SiteStore { get; set; }//אתר חנות
-        public StoreEntity() { }
+        //public StoreEntity() { }
 
-        public StoreEntity(int storeId, string name, string address, string city, string phone, string email, string manager, string siteStore)
-        {
-            StoreId = storeId;
-            StoreName = name;
-            Address = address;
-            City = city;
-            Phone = phone;
-            Email = email;
-            Manager = manager;
-            SiteStore = siteStore;
-        }
+        //public StoreEntity(int storeId, string name, string address, string city, string phone, string email, string manager, string siteStore)
+        //{
+        //    StoreId = storeId;
+        //    StoreName = name;
+        //    Address = address;
+        //    City = city;
+        //    Phone = phone;
+        //    Email = email;
+        //    Manager = manager;
+        //    SiteStore = siteStore;
+        //}
     }
 }

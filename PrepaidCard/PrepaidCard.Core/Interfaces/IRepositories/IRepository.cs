@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PrepaidCard.Core.Interfaces
+namespace PrepaidCard.Core.Interfaces.IRepositories
 {
     public interface IRepository<T>
     {

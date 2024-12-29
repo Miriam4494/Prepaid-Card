@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PrepaidCard.Core.Interfaces;
+using PrepaidCard.Core.Interfaces.IRepositories;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,12 +13,11 @@ namespace PrepaidCard.Data.Repositories
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        private readonly DbSet<T> _dbSet;
-        private readonly IRepositoryManager _iManager;
-        public Repository(DataContext dataContext, IRepositoryManager manager)
+        protected readonly DbSet<T> _dbSet;
+    
+        public Repository(DataContext dataContext)
         {
             _dbSet = dataContext.Set<T>();
-            _iManager = manager;
         }
         public List<T> Get()
         {
@@ -30,7 +30,7 @@ namespace PrepaidCard.Data.Repositories
         public T Add(T t)
         {
             _dbSet.Add(t);
-            _iManager.save();
+            
             return t;
         }
         public T Update(int id, T updatedEntity)
@@ -52,7 +52,6 @@ namespace PrepaidCard.Data.Repositories
                     property.SetValue(existingEntity, updatedValue);
                 }
             }
-            _iManager.save();
             return existingEntity;
         }
         public bool Delete(int id)
@@ -61,7 +60,7 @@ namespace PrepaidCard.Data.Repositories
             if (find != null)
             {
                 _dbSet.Remove(find);
-                _iManager.save();
+             
                 return true;
             }
             return false;

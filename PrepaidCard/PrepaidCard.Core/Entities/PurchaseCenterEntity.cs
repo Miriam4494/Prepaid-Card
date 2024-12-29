@@ -22,18 +22,19 @@ namespace PrepaidCard.Core.Entities
         public string Phone { get; set; }//טלפון
         public string Email { get; set; }//מייל
         public int Quantity { get; set; }//כמות המלאי
-        public PurchaseCenterEntity() { }
+        public List<PurchaseEntity> Purchase { get; set; }
+        //public PurchaseCenterEntity() { }
 
-        public PurchaseCenterEntity(int purchaseCenterId, string namePurchasePoint, string address, string city, string phone, string email, int quantity)
-        {
-            PurchaseCenterId = purchaseCenterId;
-            NamePurchasePoint = namePurchasePoint;
-            Address = address;
-            City = city;
-            Phone = phone;
-            Email = email;
-            Quantity = quantity;
-        }
+        //public PurchaseCenterEntity(int purchaseCenterId, string namePurchasePoint, string address, string city, string phone, string email, int quantity)
+        //{
+        //    PurchaseCenterId = purchaseCenterId;
+        //    NamePurchasePoint = namePurchasePoint;
+        //    Address = address;
+        //    City = city;
+        //    Phone = phone;
+        //    Email = email;
+        //    Quantity = quantity;
+        //}
     }
 }
 

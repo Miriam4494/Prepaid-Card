@@ -1,5 +1,6 @@
-﻿using PrepaidCard.Core.Entities; 
-using PrepaidCard.Core.Interfaces; 
+﻿using PrepaidCard.Core.Entities;
+using PrepaidCard.Core.Interfaces.IRepositories;
+using PrepaidCard.Core.Interfaces.IServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,20 +10,22 @@ using System.Threading.Tasks;
 
 namespace PrepaidCard.Service.Services
 {
-    public class CardService: CardIService
+    public class CardService: ICardService
     {
-        readonly IRepository<CardEntity> _iRepository;
-        public CardService(IRepository<CardEntity> iRepository)
+        readonly IRepositoryManager _repositoryManager;
+
+        public CardService(IRepositoryManager iRepository)
         {
-            _iRepository = iRepository;
+            _repositoryManager = iRepository;
         }
         public List<CardEntity> GetCards()
         {
-                return _iRepository.Get();
+                //return _repositoryManager._cardRepository.Get();
+                return _repositoryManager._cardRepository.GetFull();
         }
             public CardEntity GetCardById(int id)
             {
-                return _iRepository.GetById(id);
+                return _repositoryManager._cardRepository.GetById(id);
             }
             //public bool IsValidTz(string tz)
             //{
@@ -46,18 +49,33 @@ namespace PrepaidCard.Service.Services
             //        return true;
             //    return false;
             //}
-            public CardEntity AddCard(CardEntity cleaner)
-            {
-                 return _iRepository.Add(cleaner);
+            public CardEntity AddCard(CardEntity cleaner) 
+            { 
+                CardEntity c = _repositoryManager._cardRepository.Add( cleaner);
+                if (c!=null)
+                    _repositoryManager.save();
+                return c;
+            
             }
             public CardEntity UpdateCard(int id, CardEntity cleaner)
             {
-                 return _iRepository.Update(id, cleaner);
-            }
+                
+                CardEntity c = _repositoryManager._cardRepository.Update(id, cleaner);
+                if (c!=null)
+                    _repositoryManager.save();
+                return c;
+
+        }
             public bool DeleteCard(int id)
             {
-                return _iRepository.Delete(id);
+                bool succeed = _repositoryManager._cardRepository.Delete(id);
+                if (succeed)
+                    _repositoryManager.save();
+                return succeed;
+            
             }
+
+        
     }
 }
 

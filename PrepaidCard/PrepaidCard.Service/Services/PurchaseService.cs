@@ -1,5 +1,6 @@
 ﻿using PrepaidCard.Core.Entities;
-using PrepaidCard.Core.Interfaces;
+using PrepaidCard.Core.Interfaces.IRepositories;
+using PrepaidCard.Core.Interfaces.IServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,32 +9,45 @@ using System.Threading.Tasks;
 
 namespace PrepaidCard.Service.Services
 {
-    public class PurchaseService:PurchaseIService
+    public class PurchaseService:IPurchaseService
     {
-        readonly IRepository<PurchaseEntity> _iRepository;
-        public PurchaseService(IRepository<PurchaseEntity> iRepository)
+        readonly IRepositoryManager _repositoryManager;
+
+        public PurchaseService(IRepositoryManager iRepository)
         {
-            _iRepository = iRepository;
+            _repositoryManager = iRepository;
         }
         public List<PurchaseEntity> GetPurchases()
         {
-            return _iRepository.Get();
+            //return _repositoryManager._purchaseRepository.Get();
+            return _repositoryManager._purchaseRepository.GetFull();
         }
         public PurchaseEntity GetPurchaseById(int id)
         {
-            return _iRepository.GetById(id);
+            return _repositoryManager._purchaseRepository.GetById(id);
         }
         public PurchaseEntity AddPurchase(PurchaseEntity order)
         {
-            return _iRepository.Add(order);
+
+            PurchaseEntity p = _repositoryManager._purchaseRepository.Add(order);
+            if (p != null)
+                _repositoryManager.save();
+            return p;
+            
         }
         public PurchaseEntity UpdatePurchase(int id, PurchaseEntity order)
         {
-            return _iRepository.Update(id, order);
+            PurchaseEntity p = _repositoryManager._purchaseRepository.Update(id, order);
+            if (p != null)
+                _repositoryManager.save();
+            return p;
         }
         public bool DeletePurchase(int id)
         {
-            return _iRepository.Delete(id);
+            bool succeed = _repositoryManager._purchaseRepository.Delete(id);
+            if (succeed)
+                _repositoryManager.save();
+            return succeed;
         }
     }
 }

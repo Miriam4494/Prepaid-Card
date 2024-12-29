@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PrepaidCard.Core.Interfaces
+namespace PrepaidCard.Core.Interfaces.IServices
 {
-    public interface StoreIService
+    public interface IStoreService
     {
         public List<StoreEntity> GetStores();
         public StoreEntity GetStoreById(int id);

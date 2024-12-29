@@ -1,5 +1,6 @@
 ﻿using PrepaidCard.Core.Entities;
-using PrepaidCard.Core.Interfaces;
+using PrepaidCard.Core.Interfaces.IRepositories;
+using PrepaidCard.Core.Interfaces.IServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,32 +9,44 @@ using System.Threading.Tasks;
 
 namespace PrepaidCard.Service.Services
 {
-    public class CustomerService : CustomerIService
+    public class CustomerService : ICustomerService
     {
-        readonly IRepository<CustomerEntity> _iRepository;
-        public CustomerService(IRepository<CustomerEntity> iRepository)
+        readonly IRepositoryManager _repositoryManager;
+
+        public CustomerService(IRepositoryManager iRepository)
         {
-            _iRepository = iRepository;
+            _repositoryManager = iRepository;
         }
         public List<CustomerEntity> GetCustomers()
         {
-            return _iRepository.Get();
+            //return _repositoryManager._customerRepository.Get();
+            return _repositoryManager._customerRepository.GetFull();
         }
         public CustomerEntity GetCustomerById(int id)
         {
-            return _iRepository.GetById(id);
+            return _repositoryManager._customerRepository.GetById(id);
         }
         public CustomerEntity AddCustomer(CustomerEntity order)
         {
-            return _iRepository.Add(order);
+            CustomerEntity o = _repositoryManager._customerRepository.Add(order);
+            if (o != null)
+                _repositoryManager.save();
+            return o;
         }
         public CustomerEntity UpdateCustomer(int id, CustomerEntity order)
         {
-            return _iRepository.Update(id, order);
+            CustomerEntity o = _repositoryManager._customerRepository.Update(id, order);
+            if (o != null)
+                _repositoryManager.save();
+            return o;
         }
         public bool DeleteCustomer(int id)
         {
-            return _iRepository.Delete(id);
+            bool succeed = _repositoryManager._customerRepository.Delete(id);
+            if (succeed)
+                _repositoryManager.save();
+            return succeed;
         }
+
     }
 }

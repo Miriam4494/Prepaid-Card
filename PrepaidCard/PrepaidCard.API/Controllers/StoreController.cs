@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PrepaidCard.Core.Entities;
-using PrepaidCard.Core.Interfaces;
+using PrepaidCard.Core.Interfaces.IServices;
 
 namespace PrepaidCard.API.Controllers
 {
@@ -9,8 +9,8 @@ namespace PrepaidCard.API.Controllers
     [ApiController]
     public class StoreController : ControllerBase
     {
-        readonly StoreIService _iService;
-        public StoreController(StoreIService iService)
+        readonly IStoreService _iService;
+        public StoreController(IStoreService iService)
         {
             _iService = iService;
         }
