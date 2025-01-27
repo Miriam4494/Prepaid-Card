@@ -1,21 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace PrepaidCard.Core.Entities
+namespace PrepaidCard.API.PostModels
 {
-    [Table("Customers")]
-
-    public class CustomerEntity
+    public class CustomerPostModel
     {
-        [Key]
-       // [JsonIgnore]
-        public int CustomerId { get; set; }//קוד לקוח
         public string FirstName { get; set; }//שם פרטי
         public string LastName { get; set; }//שם משפחה
         public string TZ { get; set; }//תעודת זהות
@@ -25,7 +13,5 @@ namespace PrepaidCard.Core.Entities
         public string Email { get; set; }//מייל
         public DateTime DateOfBirth { get; set; } //תאריך לידה
         public DateTime DateOfJoin { get; set; }//תאריך הצטרפות
-        public List<CardEntity> Cards { get; set; }
-
     }
 }

@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PrepaidCard.API.PostModels;
+using PrepaidCard.Core.DTOs;
 using PrepaidCard.Core.Entities;
 using PrepaidCard.Core.Interfaces.IServices;
 
@@ -10,42 +13,52 @@ namespace PrepaidCard.API.Controllers
     public class StoreController : ControllerBase
     {
         readonly IStoreService _iService;
-        public StoreController(IStoreService iService)
+        private readonly IMapper _mapper;
+
+        public StoreController(IStoreService iService,IMapper mapper)
         {
             _iService = iService;
+            _mapper = mapper;
         }
-        // GET: api/<CleanerController>
         [HttpGet]
-        public ActionResult<IEnumerable<StoreEntity>> Get()
+        public ActionResult<IEnumerable<StoreDTO>> Get()
         {
-            return _iService.GetStores();
+            var store= _iService.GetStores();
+            if(store==null)
+                return NotFound();
+            return Ok(store);
         }
 
-        // GET api/<CleanerController>/5
         [HttpGet("{id}")]
-        public ActionResult<StoreEntity> Get(int id)
+        public ActionResult<StoreDTO> Get(int id)
         {
-            StoreEntity s = _iService.GetStoreById(id);
+            var s = _iService.GetStoreById(id);
             if (s == null)
                 return NotFound();
             return s;
         }
 
-        // POST api/<CleanerController>
         [HttpPost]
-        public ActionResult<StoreEntity> Post([FromBody] StoreEntity store)
+        public ActionResult<StoreDTO> Post([FromBody] StorePostModel store)
         {
-            return _iService.AddStore(store);
+            var storeDto = _mapper.Map<StoreDTO>(store);
+            storeDto = _iService.AddStore(storeDto);
+            if (storeDto == null)
+                return NotFound();
+            return storeDto;
+
         }
 
-        // PUT api/<CleanerController>/5
         [HttpPut("{id}")]
-        public ActionResult<StoreEntity> Put(int id, [FromBody] StoreEntity store)
+        public ActionResult<StoreDTO> Put(int id, [FromBody] StorePostModel store)
         {
-            return _iService.UpdateStore(id, store);
+            var storeDto = _mapper.Map<StoreDTO>(store);
+            storeDto = _iService.UpdateStore(id, storeDto);
+            if (storeDto == null)
+                return NotFound();
+            return storeDto;
         }
 
-        // DELETE api/<CleanerController>/5
         [HttpDelete("{id}")]
         public ActionResult<bool> Delete(int id)
         {

@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PrepaidCard.API.PostModels;
+using PrepaidCard.Core.DTOs;
 using PrepaidCard.Core.Entities;
 using PrepaidCard.Core.Interfaces.IServices;
 
@@ -10,42 +13,51 @@ namespace PrepaidCard.API.Controllers
     public class CustomerController : ControllerBase
     {
         readonly ICustomerService _iService;
-        public CustomerController(ICustomerService iService)
+        private readonly IMapper _mapper;
+
+        public CustomerController(ICustomerService iService,IMapper mapper)
         {
             _iService = iService;
+            _mapper = mapper;
         }
-        // GET: api/<CleanerController>
         [HttpGet]
-        public ActionResult<IEnumerable<CustomerEntity>> Get()
+        public ActionResult<IEnumerable<CardDTO>> Get()
         {
-            return _iService.GetCustomers();
+            var customer= _iService.GetCustomers();
+            if(customer == null) 
+                return NotFound();
+            return Ok(customer);
         }
 
-        // GET api/<CleanerController>/5
         [HttpGet("{id}")]
-        public ActionResult<CustomerEntity> Get(int id)
+        public ActionResult<CustomerDTO> Get(int id)
         {
-            CustomerEntity c = _iService.GetCustomerById(id);
+            var c = _iService.GetCustomerById(id);
             if (c == null)
                 return NotFound();
             return c;
         }
-
-        // POST api/<CleanerController>
         [HttpPost]
-        public ActionResult<CustomerEntity> Post([FromBody] CustomerEntity customer)
+        public ActionResult<CustomerDTO> Post([FromBody] CustomerPostModel customer)
         {
-            return _iService.AddCustomer(customer);
+            var customerDto = _mapper.Map<CustomerDTO>(customer);
+            customerDto = _iService.AddCustomer(customerDto);
+            if (customerDto == null)
+                return NotFound();
+            return customerDto;
+
         }
 
-        // PUT api/<CleanerController>/5
         [HttpPut("{id}")]
-        public ActionResult<CustomerEntity> Put(int id, [FromBody] CustomerEntity customer)
+        public ActionResult<CustomerDTO> Put(int id, [FromBody] CustomerPostModel card)
         {
-            return _iService.UpdateCustomer(id, customer);
+            var customerDto = _mapper.Map<CustomerDTO>(card);
+            customerDto = _iService.UpdateCustomer(id, customerDto);
+            if (customerDto == null)
+                return NotFound();
+            return customerDto;
         }
 
-        // DELETE api/<CleanerController>/5
         [HttpDelete("{id}")]
         public ActionResult<bool> Delete(int id)
         {

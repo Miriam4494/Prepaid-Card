@@ -1,4 +1,7 @@
-﻿using PrepaidCard.Core.Entities;
+﻿using AutoMapper;
+using PrepaidCard.Core;
+using PrepaidCard.Core.DTOs;
+using PrepaidCard.Core.Entities;
 using PrepaidCard.Core.Interfaces.IRepositories;
 using PrepaidCard.Core.Interfaces.IServices;
 using System;
@@ -12,33 +15,54 @@ namespace PrepaidCard.Service.Services
     public class CustomerService : ICustomerService
     {
         readonly IRepositoryManager _repositoryManager;
+        private readonly IMapper _mapper;
 
-        public CustomerService(IRepositoryManager iRepository)
+
+        public CustomerService(IRepositoryManager iRepository, IMapper mapper)
         {
             _repositoryManager = iRepository;
+            _mapper = mapper;
         }
-        public List<CustomerEntity> GetCustomers()
+        public IEnumerable<CustomerDTO> GetCustomers()
         {
-            //return _repositoryManager._customerRepository.Get();
-            return _repositoryManager._customerRepository.GetFull();
+            var customers = _repositoryManager._customerRepository.GetFull();
+            return _mapper.Map<IEnumerable<CustomerDTO>>(customers);
         }
-        public CustomerEntity GetCustomerById(int id)
+        public CustomerDTO GetCustomerById(int id)
         {
-            return _repositoryManager._customerRepository.GetById(id);
+            var customer = _repositoryManager._customerRepository.GetById(id);
+            return _mapper.Map<CustomerDTO>(customer);
+
         }
-        public CustomerEntity AddCustomer(CustomerEntity order)
+
+        public CustomerDTO AddCustomer(CustomerDTO customer)
         {
-            CustomerEntity o = _repositoryManager._customerRepository.Add(order);
-            if (o != null)
-                _repositoryManager.save();
-            return o;
+           // if (ValidationCheck.IsEmailValid(customer.Email) && ValidationCheck.IsTzValid(customer.TZ))
+            //{
+                var c = _mapper.Map<CustomerEntity>(customer);
+                c = _repositoryManager._customerRepository.Add(c);
+                if (c != null)
+                    _repositoryManager.save();
+
+                return _mapper.Map<CustomerDTO>(c);
+            
+           // }
+           // return null;
         }
-        public CustomerEntity UpdateCustomer(int id, CustomerEntity order)
+        public CustomerDTO UpdateCustomer(int id, CustomerDTO customer)
         {
-            CustomerEntity o = _repositoryManager._customerRepository.Update(id, order);
-            if (o != null)
-                _repositoryManager.save();
-            return o;
+           // if (ValidationCheck.IsEmailValid(customer.Email) && ValidationCheck.IsTzValid(customer.TZ))
+           // {
+                var c = _mapper.Map<CustomerEntity>(customer);
+
+                c = _repositoryManager._customerRepository.Update(id, c);
+                if (c != null)
+                    _repositoryManager.save();
+                return _mapper.Map<CustomerDTO>(c);
+           // }
+            
+            //return null;
+
         }
         public bool DeleteCustomer(int id)
         {

@@ -12,7 +12,7 @@ using PrepaidCard.Data;
 namespace PrepaidCard.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20241216215338_Init")]
+    [Migration("20250127164023_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,7 +36,6 @@ namespace PrepaidCard.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ColorCard")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("CustomerId")
@@ -54,7 +53,9 @@ namespace PrepaidCard.Data.Migrations
 
                     b.HasKey("CardId");
 
-                    b.ToTable("Card");
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("Cards");
                 });
 
             modelBuilder.Entity("PrepaidCard.Core.Entities.CustomerEntity", b =>
@@ -66,7 +67,6 @@ namespace PrepaidCard.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CustomerId"), 1L, 1);
 
                     b.Property<string>("Adress")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DateOfBirth")
@@ -89,11 +89,16 @@ namespace PrepaidCard.Data.Migrations
 
                     b.Property<string>("Phone")
                         .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("TZ")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CustomerId");
 
-                    b.ToTable("Customer");
+                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("PrepaidCard.Core.Entities.PurchaseCenterEntity", b =>
@@ -121,7 +126,6 @@ namespace PrepaidCard.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Quantity")
@@ -129,7 +133,7 @@ namespace PrepaidCard.Data.Migrations
 
                     b.HasKey("PurchaseCenterId");
 
-                    b.ToTable("PurchaseCenter");
+                    b.ToTable("PurchaseCenters");
                 });
 
             modelBuilder.Entity("PrepaidCard.Core.Entities.PurchaseEntity", b =>
@@ -140,16 +144,19 @@ namespace PrepaidCard.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PurchaseId"), 1L, 1);
 
-                    b.Property<int>("CardId")
+                    b.Property<int?>("CardEntityCardId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CustomerId")
+                    b.Property<int>("CardId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DateOfPurchase")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("PaymentMethod")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PurchaseCenterEntityPurchaseCenterId")
                         .HasColumnType("int");
 
                     b.Property<int>("PurchaseCenterId")
@@ -159,6 +166,10 @@ namespace PrepaidCard.Data.Migrations
                         .HasColumnType("float");
 
                     b.HasKey("PurchaseId");
+
+                    b.HasIndex("CardEntityCardId");
+
+                    b.HasIndex("PurchaseCenterEntityPurchaseCenterId");
 
                     b.ToTable("Purchase");
                 });
@@ -172,7 +183,6 @@ namespace PrepaidCard.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StoreId"), 1L, 1);
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("City")
@@ -202,6 +212,43 @@ namespace PrepaidCard.Data.Migrations
                     b.HasKey("StoreId");
 
                     b.ToTable("Store");
+                });
+
+            modelBuilder.Entity("PrepaidCard.Core.Entities.CardEntity", b =>
+                {
+                    b.HasOne("PrepaidCard.Core.Entities.CustomerEntity", "Customer")
+                        .WithMany("Cards")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("PrepaidCard.Core.Entities.PurchaseEntity", b =>
+                {
+                    b.HasOne("PrepaidCard.Core.Entities.CardEntity", null)
+                        .WithMany("Purchase")
+                        .HasForeignKey("CardEntityCardId");
+
+                    b.HasOne("PrepaidCard.Core.Entities.PurchaseCenterEntity", null)
+                        .WithMany("Purchase")
+                        .HasForeignKey("PurchaseCenterEntityPurchaseCenterId");
+                });
+
+            modelBuilder.Entity("PrepaidCard.Core.Entities.CardEntity", b =>
+                {
+                    b.Navigation("Purchase");
+                });
+
+            modelBuilder.Entity("PrepaidCard.Core.Entities.CustomerEntity", b =>
+                {
+                    b.Navigation("Cards");
+                });
+
+            modelBuilder.Entity("PrepaidCard.Core.Entities.PurchaseCenterEntity", b =>
+                {
+                    b.Navigation("Purchase");
                 });
 #pragma warning restore 612, 618
         }

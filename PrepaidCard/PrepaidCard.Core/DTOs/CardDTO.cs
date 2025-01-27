@@ -1,18 +1,15 @@
-﻿using System;
+﻿using PrepaidCard.Core.Entities;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace PrepaidCard.Core.Entities
+namespace PrepaidCard.Core.DTOs
 {
-    [Table("Cards")]
-    public class CardEntity
+    public class CardDTO
     {
-        [Key]
         public int CardId { get; set; }//מזהה כרטיס
         public DateTime DateOfPurchase { get; set; } //תאריך רכישה
         public DateTime CardValidity { get; set; } //תוקף כרטיס
@@ -22,7 +19,5 @@ namespace PrepaidCard.Core.Entities
         public int CustomerId { get; set; }//מזהה לקוח
         [ForeignKey(nameof(CustomerId))]
         public CustomerEntity Customer { get; set; }
-        public List<PurchaseEntity> Purchase { get; set; }
-
     }
 }

@@ -1,4 +1,5 @@
-﻿using PrepaidCard.Core.Entities;
+﻿using PrepaidCard.Core.DTOs;
+using PrepaidCard.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,10 @@ namespace PrepaidCard.Core.Interfaces.IServices
 {
     public interface ICardService
     {
-        public List<CardEntity> GetCards();
-        public CardEntity GetCardById(int id);
-        public CardEntity AddCard(CardEntity card);
-        public CardEntity UpdateCard(int id, CardEntity card);
+        public IEnumerable<CardDTO> GetCards();
+        public CardDTO GetCardById(int id);
+        public CardDTO AddCard(CardDTO card);
+        public CardDTO UpdateCard(int id, CardDTO card);
         public bool DeleteCard(int id);
     }
 }

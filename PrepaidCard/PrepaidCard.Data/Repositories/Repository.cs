@@ -23,7 +23,7 @@ namespace PrepaidCard.Data.Repositories
         {
             return _dbSet.ToList();
         }
-        public T? GetById(int id)
+        public T? GetById(int id) 
         {
             return _dbSet.Find(id);
         }

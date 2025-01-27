@@ -14,11 +14,11 @@ namespace PrepaidCard.Data
 {
     public class DataContext:DbContext
     {
-        public DbSet<CardEntity> cards { get; set; }
-        public DbSet<CustomerEntity> customers { get; set; }
-        public DbSet<PurchaseCenterEntity> purchaseCenters { get; set; }
-        public DbSet<PurchaseEntity> purchases { get; set; }
-        public DbSet<StoreEntity> stores { get; set; }
+        public DbSet<CardEntity> Cards { get; set; }
+        public DbSet<CustomerEntity> Customers { get; set; }
+        public DbSet<PurchaseCenterEntity> PurchaseCenters { get; set; }
+        public DbSet<PurchaseEntity> Purchases { get; set; }
+        public DbSet<StoreEntity> Stores { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Server=DESKTOP-1VUANBN;Database=prepaid_card_db;Integrated Security=True;TrustServerCertificate=True;Trusted_Connection=True");

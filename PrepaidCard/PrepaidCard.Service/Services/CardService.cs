@@ -1,4 +1,6 @@
-﻿using PrepaidCard.Core.Entities;
+﻿using AutoMapper;
+using PrepaidCard.Core.DTOs;
+using PrepaidCard.Core.Entities;
 using PrepaidCard.Core.Interfaces.IRepositories;
 using PrepaidCard.Core.Interfaces.IServices;
 using System;
@@ -10,72 +12,59 @@ using System.Threading.Tasks;
 
 namespace PrepaidCard.Service.Services
 {
-    public class CardService: ICardService
+    public class CardService : ICardService
     {
         readonly IRepositoryManager _repositoryManager;
+        private readonly IMapper _mapper;
 
-        public CardService(IRepositoryManager iRepository)
+
+        public CardService(IRepositoryManager iRepository,IMapper mapper)
         {
             _repositoryManager = iRepository;
+            _mapper = mapper;
         }
-        public List<CardEntity> GetCards()
+
+        public IEnumerable<CardDTO> GetCards()
         {
-                //return _repositoryManager._cardRepository.Get();
-                return _repositoryManager._cardRepository.GetFull();
+            var cards= _repositoryManager._cardRepository.GetFull();
+           return _mapper.Map<IEnumerable<CardDTO>>(cards);
         }
-            public CardEntity GetCardById(int id)
-            {
-                return _repositoryManager._cardRepository.GetById(id);
-            }
-            //public bool IsValidTz(string tz)
-            //{
-            //    if (tz.Length != 9)
-            //        return false;
-            //    int sum = 0, i = 0, plus;
-            //    while (i < tz.Length - 1)
-            //    {
-            //        if (tz[i] < '0' || tz[i] > '9')
-            //            return false;
-            //        plus = tz[i] - '0';
-            //        if (i % 2 == 1)
-            //            plus *= 2;
-            //        if (plus > 9)
-            //            plus = plus / 10 + plus % 10;
-            //        sum += plus;
-            //        i++;
-            //    }
-            //    sum %= 10;
-            //    if (10 - sum == tz[tz.Length - 1] - '0')
-            //        return true;
-            //    return false;
-            //}
-            public CardEntity AddCard(CardEntity cleaner) 
-            { 
-                CardEntity c = _repositoryManager._cardRepository.Add( cleaner);
-                if (c!=null)
-                    _repositoryManager.save();
-                return c;
-            
-            }
-            public CardEntity UpdateCard(int id, CardEntity cleaner)
-            {
-                
-                CardEntity c = _repositoryManager._cardRepository.Update(id, cleaner);
-                if (c!=null)
-                    _repositoryManager.save();
-                return c;
+        public CardDTO GetCardById(int id)
+        {
+            var cards= _repositoryManager._cardRepository.GetById(id);
+            return _mapper.Map<CardDTO>(cards);
 
         }
-            public bool DeleteCard(int id)
-            {
-                bool succeed = _repositoryManager._cardRepository.Delete(id);
-                if (succeed)
-                    _repositoryManager.save();
-                return succeed;
-            
-            }
 
-        
+        public CardDTO AddCard(CardDTO card)
+        {
+            var c = _mapper.Map<CardEntity>(card);
+            c = _repositoryManager._cardRepository.Add(c);
+            if (c != null)
+                _repositoryManager.save();
+            return _mapper.Map<CardDTO>(c);
+        }
+        public CardDTO UpdateCard(int id, CardDTO card)
+        {
+           
+            var c = _mapper.Map<CardEntity>(card);
+
+            c = _repositoryManager._cardRepository.Update(id, c);
+            if (c != null)
+                _repositoryManager.save();
+            return _mapper.Map<CardDTO>(c);
+
+        }
+        public bool DeleteCard(int id)
+        {
+            bool succeed = _repositoryManager._cardRepository.Delete(id);
+            if (succeed)
+                _repositoryManager.save();
+            return succeed;
+
+        }
+
+
     }
 }
 

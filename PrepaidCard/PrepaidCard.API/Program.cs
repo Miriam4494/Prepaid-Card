@@ -22,25 +22,7 @@ namespace PrepaidCard.API
             builder.Services.AddSwaggerGen();
 
             builder.Services.addDependency();
-            
-            //builder.Services.AddScoped<ICardService, CardService>();
-            //builder.Services.AddScoped<ICustomerService, CustomerService>();
-            //builder.Services.AddScoped<IPurchaseCenterService, PurchaseCenterService>();
-            //builder.Services.AddScoped<IPurchaseService, PurchaseService>();
-            //builder.Services.AddScoped<IStoreService, StoreService>();
-
-            //builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
-            //builder.Services.AddScoped<ICardRepository, CardRepository>();
-            //builder.Services.AddScoped<IPurchaseRepository, PurchaseRepository>();
-            //builder.Services.AddScoped<IPurchaseCenterRepository, PurchaseCenterRepository>();
-            //builder.Services.AddScoped<IStoreRepository, StoreRepository>();
-      
-            //builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            //builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
-
-            //builder.Services.AddControllers();
-            //builder.Services.AddSingleton<DataContext>();
-            //builder.Services.AddDbContext<DataContext>();
+           
 
 
             var app = builder.Build();

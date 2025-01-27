@@ -1,4 +1,6 @@
-﻿using PrepaidCard.Core.Entities;
+﻿using AutoMapper;
+using PrepaidCard.Core.DTOs;
+using PrepaidCard.Core.Entities;
 using PrepaidCard.Core.Interfaces.IRepositories;
 using PrepaidCard.Core.Interfaces.IServices;
 using System;
@@ -12,35 +14,44 @@ namespace PrepaidCard.Service.Services
     public class StoreService: IStoreService
     {
         readonly IRepositoryManager _repositoryManager;
+        private readonly IMapper _mapper;
 
-        public StoreService(IRepositoryManager iRepository)
+
+        public StoreService(IRepositoryManager iRepository,IMapper mapper)
         {
             _repositoryManager = iRepository;
+            _mapper = mapper;
         }
-        public List<StoreEntity> GetStores()
+        public IEnumerable<StoreDTO> GetStores()
         {
-            //return _repositoryManager._storeRepository.Get();
-            return _repositoryManager._storeRepository.GetFull();
+            var stores = _repositoryManager._storeRepository.GetFull();
+            return _mapper.Map<IEnumerable<StoreDTO>>(stores);
         }
-        public StoreEntity GetStoreById(int id)
+        public StoreDTO GetStoreById(int id)
         {
-            return _repositoryManager._storeRepository.GetById(id);
+            var store = _repositoryManager._storeRepository.GetById(id);
+            return _mapper.Map<StoreDTO>(store);
+
         }
-        public StoreEntity AddStore(StoreEntity order)
+
+        public StoreDTO AddStore(StoreDTO card)
+        {
+            var s = _mapper.Map<StoreEntity>(card);
+            s = _repositoryManager._storeRepository.Add(s);
+            if (s != null)
+                _repositoryManager.save();
+            return _mapper.Map<StoreDTO>(s);
+        }
+        public StoreDTO UpdateStore(int id, StoreDTO card)
         {
 
-            StoreEntity s = _repositoryManager._storeRepository.Add(order);
+            var s = _mapper.Map<StoreEntity>(card);
+
+            s = _repositoryManager._storeRepository.Update(id, s);
             if (s != null)
                 _repositoryManager.save();
-            return s;
-            
-        }
-        public StoreEntity UpdateStore(int id, StoreEntity order)
-        {
-            StoreEntity s = _repositoryManager._storeRepository.Update(id, order);
-            if (s != null)
-                _repositoryManager.save();
-            return s;
+            return _mapper.Map<StoreDTO>(s);
+
         }
         public bool DeleteStore(int id)
         {

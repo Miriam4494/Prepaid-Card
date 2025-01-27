@@ -1,4 +1,6 @@
-﻿using PrepaidCard.Core.Entities;
+﻿using AutoMapper;
+using PrepaidCard.Core.DTOs;
+using PrepaidCard.Core.Entities;
 using PrepaidCard.Core.Interfaces.IRepositories;
 using PrepaidCard.Core.Interfaces.IServices;
 using System;
@@ -12,35 +14,43 @@ namespace PrepaidCard.Service.Services
     public class PurchaseService:IPurchaseService
     {
         readonly IRepositoryManager _repositoryManager;
+        private readonly IMapper _mapper;
 
-        public PurchaseService(IRepositoryManager iRepository)
+        public PurchaseService(IRepositoryManager iRepository,IMapper mapper)
         {
             _repositoryManager = iRepository;
+            _mapper = mapper;
         }
-        public List<PurchaseEntity> GetPurchases()
+        public IEnumerable<PurchaseDTO> GetPurchases()
         {
-            //return _repositoryManager._purchaseRepository.Get();
-            return _repositoryManager._purchaseRepository.GetFull();
+            var purchases = _repositoryManager._purchaseRepository.GetFull();
+            return _mapper.Map<IEnumerable<PurchaseDTO>>(purchases);
         }
-        public PurchaseEntity GetPurchaseById(int id)
+        public PurchaseDTO GetPurchaseById(int id)
         {
-            return _repositoryManager._purchaseRepository.GetById(id);
+            var purchase = _repositoryManager._purchaseRepository.GetById(id);
+            return _mapper.Map<PurchaseDTO>(purchase);
+
         }
-        public PurchaseEntity AddPurchase(PurchaseEntity order)
+
+        public PurchaseDTO AddPurchase(PurchaseDTO purchase)
+        {
+            var p = _mapper.Map<PurchaseEntity>(purchase);
+            p = _repositoryManager._purchaseRepository.Add(p);
+            if (p != null)
+                _repositoryManager.save();
+            return _mapper.Map<PurchaseDTO>(p);
+        }
+        public PurchaseDTO UpdatePurchase(int id, PurchaseDTO purchase)
         {
 
-            PurchaseEntity p = _repositoryManager._purchaseRepository.Add(order);
+            var p = _mapper.Map<PurchaseEntity>(purchase);
+
+            p= _repositoryManager._purchaseRepository.Update(id, p);
             if (p != null)
                 _repositoryManager.save();
-            return p;
-            
-        }
-        public PurchaseEntity UpdatePurchase(int id, PurchaseEntity order)
-        {
-            PurchaseEntity p = _repositoryManager._purchaseRepository.Update(id, order);
-            if (p != null)
-                _repositoryManager.save();
-            return p;
+            return _mapper.Map<PurchaseDTO>(p);
+
         }
         public bool DeletePurchase(int id)
         {

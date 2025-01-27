@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PrepaidCard.API.PostModels;
+using PrepaidCard.Core.DTOs;
 using PrepaidCard.Core.Entities;
 using PrepaidCard.Core.Interfaces.IServices;
 
@@ -10,42 +13,51 @@ namespace PrepaidCard.API.Controllers
     public class PurchaseCenterController : ControllerBase
     {
         readonly IPurchaseCenterService _iService;
-        public PurchaseCenterController(IPurchaseCenterService iService)
+        private readonly IMapper _mapper;
+
+        public PurchaseCenterController(IPurchaseCenterService iService,IMapper mapper)
         {
             _iService = iService;
+            _mapper = mapper;
         }
-        // GET: api/<CleanerController>
         [HttpGet]
-        public ActionResult<IEnumerable<PurchaseCenterEntity>> Get()
+        public ActionResult<IEnumerable<PurchaseCenterDTO>> Get()
         {
-            return _iService.GetPurchaseCenters();
+            var purchaseCenter= _iService.GetPurchaseCenters();
+            if(purchaseCenter==null)
+                return NotFound();
+            return Ok(purchaseCenter);
         }
 
-        // GET api/<CleanerController>/5
         [HttpGet("{id}")]
-        public ActionResult<PurchaseCenterEntity> Get(int id)
+        public ActionResult<PurchaseCenterDTO> Get(int id)
         {
-            PurchaseCenterEntity pc = _iService.GetPurchaseCenterById(id);
+            var pc = _iService.GetPurchaseCenterById(id);
             if (pc == null)
                 return NotFound();
             return pc;
         }
-
-        // POST api/<CleanerController>
         [HttpPost]
-        public ActionResult<PurchaseCenterEntity> Post([FromBody] PurchaseCenterEntity purchaseCenter)
+        public ActionResult<PurchaseCenterDTO> Post([FromBody] PurchaseCenterPostModel purchasecenter)
         {
-            return _iService.AddPurchaseCenter(purchaseCenter);
+            var purchaseCenterDto = _mapper.Map<PurchaseCenterDTO>(purchasecenter);
+            purchaseCenterDto = _iService.AddPurchaseCenter(purchaseCenterDto);
+            if (purchaseCenterDto == null)
+                return NotFound();
+            return purchaseCenterDto;
+
         }
 
-        // PUT api/<CleanerController>/5
         [HttpPut("{id}")]
-        public ActionResult<PurchaseCenterEntity> Put(int id, [FromBody] PurchaseCenterEntity purchaseCenter)
+        public ActionResult<PurchaseCenterDTO> Put(int id, [FromBody] PurchaseCenterPostModel purchasecenter)
         {
-            return _iService.UpdatePurchaseCenter(id, purchaseCenter);
+            var purchaseCenterDto = _mapper.Map<PurchaseCenterDTO>(purchasecenter);
+            purchaseCenterDto = _iService.UpdatePurchaseCenter(id, purchaseCenterDto);
+            if (purchaseCenterDto == null)
+                return NotFound();
+            return purchaseCenterDto;
         }
 
-        // DELETE api/<CleanerController>/5
         [HttpDelete("{id}")]
         public ActionResult<bool> Delete(int id)
         {

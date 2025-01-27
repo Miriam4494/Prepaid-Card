@@ -3,6 +3,7 @@ using PrepaidCard.Core.Interfaces.IServices;
 using PrepaidCard.Data.Repositories;
 using PrepaidCard.Data;
 using PrepaidCard.Service.Services;
+using PrepaidCard.Core;
 
 namespace PrepaidCard.API
 {
@@ -28,6 +29,9 @@ namespace PrepaidCard.API
             services.AddControllers();
             services.AddSingleton<DataContext>();
             services.AddDbContext<DataContext>();
+
+            services.AddAutoMapper(typeof(MappingProfile), typeof(MappingPostProfile));
+
 
         }
     }

@@ -30,9 +30,5 @@ namespace PrepaidCard.Data.Repositories
             _dataContext.SaveChanges();
         }
 
-
-
-       
-        
     }
 }

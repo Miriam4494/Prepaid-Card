@@ -1,4 +1,5 @@
-﻿using PrepaidCard.Core.Entities;
+﻿using PrepaidCard.Core.DTOs;
+using PrepaidCard.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,10 @@ namespace PrepaidCard.Core.Interfaces.IServices
 {
     public interface IPurchaseCenterService
     {
-        public List<PurchaseCenterEntity> GetPurchaseCenters();
-        public PurchaseCenterEntity GetPurchaseCenterById(int id);
-        public PurchaseCenterEntity AddPurchaseCenter(PurchaseCenterEntity purchaseCenterEntity);
-        public PurchaseCenterEntity UpdatePurchaseCenter(int id, PurchaseCenterEntity purchaseCenterEntity);
+        public IEnumerable<PurchaseCenterDTO> GetPurchaseCenters();
+        public PurchaseCenterDTO GetPurchaseCenterById(int id);
+        public PurchaseCenterDTO AddPurchaseCenter(PurchaseCenterDTO purchaseCenterEntity);
+        public PurchaseCenterDTO UpdatePurchaseCenter(int id, PurchaseCenterDTO purchaseCenterEntity);
         public bool DeletePurchaseCenter(int id);
     }
 }
