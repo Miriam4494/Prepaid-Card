@@ -24,9 +24,9 @@ namespace PrepaidCard.Service.Services
             _mapper = mapper;
         }
 
-        public IEnumerable<CardDTO> GetCards()
+        public async Task<IEnumerable<CardDTO>> GetallAsync()
         {
-            var cards= _repositoryManager._cardRepository.GetFull();
+            var cards= await _repositoryManager._cardRepository.GetFullAsync();
            return _mapper.Map<IEnumerable<CardDTO>>(cards);
         }
         public CardDTO GetCardById(int id)

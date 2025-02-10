@@ -1,4 +1,5 @@
-﻿using PrepaidCard.Core.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using PrepaidCard.Core.Entities;
 using PrepaidCard.Core.Interfaces.IRepositories;
 using System;
 using System.Collections.Generic;
@@ -15,10 +16,11 @@ namespace PrepaidCard.Data.Repositories
             {
 
             }
-            public List<StoreEntity> GetFull()
+            public async Task<IEnumerable<StoreEntity>> GetFullAsync()
             {
-                return _dbSet.ToList();
+                return await _dbSet.ToListAsync();
             }
+        
 
-        }
+    }
 }

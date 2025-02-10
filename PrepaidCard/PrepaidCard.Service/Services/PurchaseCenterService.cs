@@ -22,11 +22,13 @@ namespace PrepaidCard.Service.Services
             _repositoryManager = iRepository;
             _mapper = mapper;
         }
-        public IEnumerable<PurchaseCenterDTO> GetPurchaseCenters()
+        public async Task<IEnumerable<PurchaseCenterDTO>> GetallAsync()
         {
-            var purchases = _repositoryManager._purchaseCenterRepository.GetFull();
+            var purchases = _repositoryManager._purchaseCenterRepository.GetFullAsync();
             return _mapper.Map<IEnumerable<PurchaseCenterDTO>>(purchases);
         }
+       
+
         public PurchaseCenterDTO GetPurchaseCenterById(int id)
         {
             var purchase = _repositoryManager._purchaseCenterRepository.GetById(id);

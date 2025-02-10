@@ -19,10 +19,11 @@ namespace PrepaidCard.Data.Repositories
         {
             _dbSet = dataContext.Set<T>();
         }
-        public List<T> Get()
+        public async Task<IEnumerable<T>> GetAsync()
         {
-            return _dbSet.ToList();
+            return await _dbSet.ToListAsync();
         }
+        
         public T? GetById(int id) 
         {
             return _dbSet.Find(id);

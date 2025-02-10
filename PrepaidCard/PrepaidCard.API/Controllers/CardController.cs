@@ -5,6 +5,7 @@ using PrepaidCard.API.PostModels;
 using PrepaidCard.Core.DTOs;
 using PrepaidCard.Core.Entities;
 using PrepaidCard.Core.Interfaces.IServices;
+using PrepaidCard.Service.Services;
 
 namespace PrepaidCard.API.Controllers
 {
@@ -24,9 +25,9 @@ namespace PrepaidCard.API.Controllers
         
 
         [HttpGet]
-        public ActionResult<IEnumerable<CardDTO>> Get()
+        public async Task<ActionResult<IEnumerable<CardDTO>>> Get()
         {
-            var card= _iService.GetCards();
+            var card=await _iService.GetallAsync();
             if(card == null) 
                 return NotFound();
             return Ok(card);

@@ -10,7 +10,7 @@ namespace PrepaidCard.Core.Interfaces.IServices
 {
     public interface IPurchaseCenterService
     {
-        public IEnumerable<PurchaseCenterDTO> GetPurchaseCenters();
+        public Task<IEnumerable<PurchaseCenterDTO>> GetallAsync();
         public PurchaseCenterDTO GetPurchaseCenterById(int id);
         public PurchaseCenterDTO AddPurchaseCenter(PurchaseCenterDTO purchaseCenterEntity);
         public PurchaseCenterDTO UpdatePurchaseCenter(int id, PurchaseCenterDTO purchaseCenterEntity);

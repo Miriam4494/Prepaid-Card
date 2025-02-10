@@ -3,6 +3,7 @@ using PrepaidCard.Core.Entities;
 using PrepaidCard.Core.Interfaces.IRepositories;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,10 +18,11 @@ namespace PrepaidCard.Data.Repositories
         {
 
         }
-        public List<PurchaseCenterEntity> GetFull()
+        public async Task<IEnumerable<PurchaseCenterEntity>> GetFullAsync()
         {
-            return _dbSet.Include(p => p.Purchase).ToList();
+            return await _dbSet.Include(p => p.Purchase).ToListAsync();
         }
+     
 
     }
 }

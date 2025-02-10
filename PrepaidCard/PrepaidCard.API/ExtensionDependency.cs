@@ -31,6 +31,7 @@ namespace PrepaidCard.API
             services.AddDbContext<DataContext>();
 
             services.AddAutoMapper(typeof(MappingProfile), typeof(MappingPostProfile));
+            
 
 
         }

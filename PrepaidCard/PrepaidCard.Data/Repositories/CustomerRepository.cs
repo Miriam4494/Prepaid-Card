@@ -18,10 +18,12 @@ namespace PrepaidCard.Data.Repositories
         {
 
         }
-        public List<CustomerEntity> GetFull()
+        public async Task<IEnumerable<CustomerEntity>> GetFullAsync()
         {
-            return _dbSet.Include(c => c.Cards).ToList();
+            return await _dbSet.Include(c => c.Cards).ToListAsync();
         }
+       
+
 
     }
 }

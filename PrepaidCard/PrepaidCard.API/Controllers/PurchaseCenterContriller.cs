@@ -21,12 +21,13 @@ namespace PrepaidCard.API.Controllers
             _mapper = mapper;
         }
         [HttpGet]
-        public ActionResult<IEnumerable<PurchaseCenterDTO>> Get()
+
+        public async Task<ActionResult<IEnumerable<PurchaseCenterDTO>>> Get()
         {
-            var purchaseCenter= _iService.GetPurchaseCenters();
-            if(purchaseCenter==null)
+            var pc = await _iService.GetallAsync();
+            if (pc == null)
                 return NotFound();
-            return Ok(purchaseCenter);
+            return Ok(pc);
         }
 
         [HttpGet("{id}")]

@@ -10,7 +10,7 @@ namespace PrepaidCard.Core.Interfaces.IServices
 {
     public interface ICardService
     {
-        public IEnumerable<CardDTO> GetCards();
+        public Task<IEnumerable<CardDTO>> GetallAsync();
         public CardDTO GetCardById(int id);
         public CardDTO AddCard(CardDTO card);
         public CardDTO UpdateCard(int id, CardDTO card);

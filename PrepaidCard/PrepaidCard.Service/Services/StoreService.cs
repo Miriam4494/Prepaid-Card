@@ -22,9 +22,10 @@ namespace PrepaidCard.Service.Services
             _repositoryManager = iRepository;
             _mapper = mapper;
         }
-        public IEnumerable<StoreDTO> GetStores()
+    
+        public async Task<IEnumerable<StoreDTO>> GetallAsync()
         {
-            var stores = _repositoryManager._storeRepository.GetFull();
+            var stores = _repositoryManager._storeRepository.GetFullAsync();
             return _mapper.Map<IEnumerable<StoreDTO>>(stores);
         }
         public StoreDTO GetStoreById(int id)

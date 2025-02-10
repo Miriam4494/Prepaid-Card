@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace PrepaidCard.Core.Interfaces.IRepositories
 {
-    public interface IPurchaseRepository:IRepository<PurchaseEntity>
+   
+    public interface IPurchaseRepository : IRepository<PurchaseEntity>
     {
-        List<PurchaseEntity> GetFull();
-
+        public Task<IEnumerable<PurchaseEntity>> GetFullAsync();
     }
 }
